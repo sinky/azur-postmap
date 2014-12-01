@@ -5,7 +5,7 @@
 ```
 [azur-postmap category_name="Reisen"]
 ```
-All posts with a custom field "latlng" and a coordinate like "51.4,7.5" will displayed
+All posts with geolocation within given category will displayed
 
 
 ## Recommended CSS

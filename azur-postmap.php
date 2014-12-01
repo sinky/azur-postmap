@@ -24,7 +24,7 @@ add_action( 'wp_enqueue_scripts', 'azur_postmap_scripts' );
 
 function azur_postmap_shortcode( $atts ) {
   $options = shortcode_atts( array(
-    'category_name' => 'Reisen'
+    'category_name' => ''
     ), $atts );
 
   $posts = get_posts(array(
@@ -33,7 +33,6 @@ function azur_postmap_shortcode( $atts ) {
   ));
   
   $data = array();
-  
  
   foreach($posts as $post) { 
     $id = $post->ID;
