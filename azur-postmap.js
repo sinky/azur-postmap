@@ -16,6 +16,7 @@
     var iconRed = { anchor: new google.maps.Point(11, 11), url: "http://load.my-azur.de/f/o/dot-red.png" };
     var iconGreen = { anchor: new google.maps.Point(11, 11), url: "http://load.my-azur.de/f/o/dot-green.png" };
     var iconBlue = { anchor: new google.maps.Point(11, 11), url: "http://load.my-azur.de/f/o/dot-blue.png"};
+    var iconPinRed = { anchor: new google.maps.Point(24, 12), url: "http://load.my-azur.de/f/o/map-marker-24.png"};
     
     for(var type in google.maps.MapTypeId) {
       mapTypeIds.push(google.maps.MapTypeId[type]);
@@ -46,13 +47,13 @@
       var lat = entry.lat;
       var lng = entry.lng;
       
-      if(!/^\d+(\.\d+)?/.test(lat) || !/^\d+(\.\d+)?/.test(lng)){
+      if(!/^[+-]?\d+(\.\d+)?/.test(lat) || !/^[+-]?\d+(\.\d+)?/.test(lng)){
         return;
       }
         
       var marker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, lng),
-        icon: iconRed,
+        //icon: iconPinRed,
         map: map,
         //title: entry.post_title
       });
@@ -64,14 +65,14 @@
         content: entry.post_title,
         cssClass: 'googleTooltip',
         position: 'left',
-        gap: 17
+        gap: 8
       });      
       
       google.maps.event.addListener(marker, 'click', function() {
         infowindow.setContent(
-          '<h2><a href="' + permalink + '">' + post_title + '</a></h2>' +
+          '<nobr><h2><a href="' + permalink + '">' + post_title + '</a></h2></nobr>' +
           '<p>' + post_content + '</p>' +
-          '<p>' + post_date + '</p>'
+          '<p>' + post_date + ' <a href="' + permalink + '">Kompletten Bericht lesen</a></p>'
         );
         infowindow.open(map,marker);
       });  
