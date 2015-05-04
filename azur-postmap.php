@@ -33,6 +33,7 @@ function azur_postmap_shortcode( $atts ) {
   ));
   
   $data = array();
+  
  
   foreach($posts as $post) { 
     $id = $post->ID;
@@ -48,8 +49,11 @@ function azur_postmap_shortcode( $atts ) {
     $e->lat = $lat;
     $e->lng = $lng;
     $e->post_title = $post->post_title;
-    $e->post_content = $post->post_content;
-    $e->post_date = $post->post_date;
+    $e->post_content = $post->post_excerpt;
+    if(empty(trim($e->post_content))) {
+      $e->post_content = "Kein Text Auszug vorhanden.";
+    }
+    $e->post_date = date("d.m.Y", strtotime($post->post_date));//;
     $data[] = $e;
   }
   
