@@ -59,9 +59,10 @@ function azur_postmap_shortcode( $atts ) {
   
   $json = json_encode($data);
 
-  echo "<script>var azurPostmapData = ".$json.";</script>";
-  echo "<div id='azur-postmap' class='azur-postmap'>Lade Postmap ...</div>";
+  $output =  "<script>var azurPostmapData = ".$json.";</script>";
+  $output .=  "<div id='azur-postmap' class='azur-postmap'>Lade Postmap ...</div>";
   
+  return $output;
 }
 add_shortcode( 'azur-postmap', 'azur_postmap_shortcode' );
 
