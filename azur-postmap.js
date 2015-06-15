@@ -59,14 +59,15 @@
       });
       
       markers.push(marker);
-
+if(entry.tooltip) {
       var tooltip = new Tooltip({
         marker: marker,
         content: entry.post_title,
         cssClass: 'googleTooltip',
         position: 'left',
         gap: 8
-      });      
+      });
+}
       
       google.maps.event.addListener(marker, 'click', function() {
         infowindow.setContent(
