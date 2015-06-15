@@ -18,13 +18,16 @@ if ( ! defined( 'WPINC' ) ) {
 
 function azur_postmap_scripts() {
   wp_enqueue_script('google-maps', 'https://maps.googleapis.com/maps/api/js?v=3.9', array(), 0, true);
+  wp_enqueue_script('azur-postmap-tooltip', plugins_url('google.tooltip.js', __FILE__ ), array(), 0, true);
   wp_enqueue_script('azur-postmap', plugins_url('azur-postmap.js', __FILE__ ), array(), 0, true);
 }
 add_action( 'wp_enqueue_scripts', 'azur_postmap_scripts' );
 
+
 function azur_postmap_shortcode( $atts ) {
   $options = shortcode_atts( array(
-    'category_name' => ''
+    'category_name' => '',
+    'tooltip' => false
     ), $atts );
 
   $posts = get_posts(array(
@@ -33,7 +36,6 @@ function azur_postmap_shortcode( $atts ) {
   ));
   
   $data = array();
-  
  
   foreach($posts as $post) { 
     $id = $post->ID;
@@ -54,6 +56,7 @@ function azur_postmap_shortcode( $atts ) {
       $e->post_content = "Kein Text Auszug vorhanden.";
     }
     $e->post_date = date("d.m.Y", strtotime($post->post_date));//;
+    $e->tooltip = ($options['tooltip'] == "true") ? 1: 0;
     $data[] = $e;
   }
   
