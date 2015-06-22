@@ -68,17 +68,3 @@ function azur_postmap_shortcode( $atts ) {
   return $output;
 }
 add_shortcode( 'azur-postmap', 'azur_postmap_shortcode' );
-
-if(!function_exists('azur_adminbar_map')) {
-  function azur_adminbar_map() {
-    global $wp_admin_bar;
-    $wp_admin_bar->add_menu( array(
-      'parent' => false,
-      'id' => 'map',
-      'title' => 'Map',
-      'href' => plugins_url('map.html', __FILE__ ),
-      'meta' => array('target' => '_blank')
-    ));
-  }
-  add_action( 'wp_before_admin_bar_render', 'azur_adminbar_map' );
-}
