@@ -1,5 +1,5 @@
-<?php  
-/* 
+<?php
+/*
 Plugin Name: Azur Post Map
 Plugin URI: http://my-azur.de
 Version: 0.1
@@ -35,34 +35,39 @@ function azur_postmap_shortcode( $atts ) {
   ));
 
   $data = array();
- 
-  foreach($posts as $post) { 
+
+  foreach($posts as $post) {
     $id = $post->ID;
     $lat = get_post_meta($post->ID, 'geo_latitude', true);
     $lng = get_post_meta($post->ID, 'geo_longitude', true);
     if(empty($lat) || empty($lng)) { continue; }
-    
-    $permalink = get_permalink($id);
-  
+
     $e = new StdClass();
     $e->id = $id;
-    $e->permalink = $permalink;
+    $e->permalink = get_permalink($id);
     $e->lat = $lat;
     $e->lng = $lng;
     $e->post_title = $post->post_title;
     $e->post_content = $post->post_excerpt;
     if(empty(trim($e->post_content))) {
-      $e->post_content = "Kein Text Auszug vorhanden.";
+      $e->post_content = substr(strip_tags($post->post_content),0, 140);
+      if(strlen($e->post_content) >= 140) {
+        $e->post_content .= " &hellip;";
+      }
+
+      if(empty(trim($e->post_content))) {
+        $e->post_content = "Kein Text Auszug vorhanden.";
+      }
     }
     $e->post_date = date("d.m.Y", strtotime($post->post_date));//;
     $data[] = $e;
   }
-  
+
   $json = json_encode($data);
 
   $output =  "<script>var azurPostmapData = ".$json.";</script>";
   $output .=  "<div id='azur-postmap' class='azur-postmap'>Lade Postmap ...</div>";
-  
+
   return $output;
 }
 add_shortcode( 'azur-postmap', 'azur_postmap_shortcode' );
