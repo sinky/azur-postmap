@@ -2,11 +2,15 @@
 
   function azurPostMap() {
     var infowindow = new google.maps.InfoWindow({maxWidth: 500});
+    //var iconGoogle = { url: "//my-azur.de/load/f/o/marker-google-red.png" }; 
     var iconGoogle = { url: "//mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=1" };
+    //var iconGoogleBlue = { url: "//my-azur.de/load/f/o/marker-google-blue.png" };
+    var iconGoogleBlue = { url: "//mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-blue.png?scale=1" };
     var iconRed = { anchor: new google.maps.Point(11, 11), url: "//my-azur.de/load/f/o/dot-red.png" };
     var iconGreen = { anchor: new google.maps.Point(11, 11), url: "//my-azur.de/load/f/o/dot-green.png" };
     var iconBlue = { anchor: new google.maps.Point(11, 11), url: "//my-azur.de/load/f/o/dot-blue.png"};
     var iconPinRed = { anchor: new google.maps.Point(24, 12), url: "//my-azur.de/load/f/o/map-marker-24.png"};
+    // Icons: http://stackoverflow.com/a/18531494
 
     for(var type in google.maps.MapTypeId) {
       mapTypeIds.push(google.maps.MapTypeId[type]);
@@ -31,6 +35,7 @@
       var post_title = entry.post_title;
       var post_content = entry.post_content;
       var post_date = entry.post_date;
+      var post_tags = entry.post_tags;
       var permalink = entry.permalink;
 
       var lat = entry.lat;
@@ -44,7 +49,11 @@
         position: new google.maps.LatLng(lat, lng),
         map: map
       });
-
+      
+      if(post_tags.indexOf('sehenswert') != -1) {
+        marker.setIcon(iconGoogleBlue);
+      }
+      
       markers.push(marker);
 
       if(post_title) {

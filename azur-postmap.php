@@ -59,7 +59,9 @@ function azur_postmap_shortcode( $atts ) {
         $e->post_content = "Kein Text Auszug vorhanden.";
       }
     }
-    $e->post_date = date("d.m.Y", strtotime($post->post_date));//;
+    $e->post_date = date("d.m.Y", strtotime($post->post_date));
+
+    $e->post_tags = implode(',', wp_get_post_tags($id, array('fields'=>'names')) );
     $data[] = $e;
   }
 
