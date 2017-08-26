@@ -16,6 +16,16 @@ All posts with geolocation within given category will displayed
 .azur-postmap img {
   max-width: none;
 }
+.azur-postmap .gm-style .gm-style-iw {
+  font-size: 14px;
+}
+.azur-postmap .infowindow-title,
+.azur-postmap .infowindow-date {
+  margin-bottom: .5em;
+}
+.azur-postmap .infowindow-title {
+  font-size: large;
+}
 .googleTooltip {
   border-radius: 5px;
   background-color: rgba(0,0,0,0.7);

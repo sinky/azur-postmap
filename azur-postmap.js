@@ -2,14 +2,8 @@
 
   function azurPostMap() {
     var infowindow = new google.maps.InfoWindow({maxWidth: 500});
-    //var iconGoogle = { url: "//my-azur.de/load/f/o/marker-google-red.png" }; 
     var iconGoogle = { url: "//mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=1" };
-    //var iconGoogleBlue = { url: "//my-azur.de/load/f/o/marker-google-blue.png" };
     var iconGoogleBlue = { url: "//mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-blue.png?scale=1" };
-    var iconRed = { anchor: new google.maps.Point(11, 11), url: "//my-azur.de/load/f/o/dot-red.png" };
-    var iconGreen = { anchor: new google.maps.Point(11, 11), url: "//my-azur.de/load/f/o/dot-green.png" };
-    var iconBlue = { anchor: new google.maps.Point(11, 11), url: "//my-azur.de/load/f/o/dot-blue.png"};
-    var iconPinRed = { anchor: new google.maps.Point(24, 12), url: "//my-azur.de/load/f/o/map-marker-24.png"};
     // Icons: http://stackoverflow.com/a/18531494
 
     for(var type in google.maps.MapTypeId) {
@@ -49,11 +43,11 @@
         position: new google.maps.LatLng(lat, lng),
         map: map
       });
-      
-      if(post_tags.indexOf('sehenswert') != -1) {
+
+      if(post_tags.indexOf('postmapicon-blue') != -1) {
         marker.setIcon(iconGoogleBlue);
       }
-      
+
       markers.push(marker);
 
       if(post_title) {
@@ -68,9 +62,9 @@
 
       google.maps.event.addListener(marker, 'click', function() {
         infowindow.setContent(
-          '<nobr><h2><a href="' + permalink + '">' + post_title + '</a></h2></nobr>' +
-          '<p>' + post_content + '</p>' +
-          '<p>' + post_date + ' <a href="' + permalink + '">Kompletten Bericht lesen</a></p>'
+          '<div class="infowindow-title"><a href="' + permalink + '">' + post_title + '</a></div>' +
+          '<div class="infowindow-date">' + post_date + '</div>' +
+          '<div class="infowindow-content">' + post_content + '</div>'
         );
         infowindow.open(map,marker);
       });
@@ -118,13 +112,7 @@
   window.azurPostMap = azurPostMap;
 
   if($map.length){
-    var scripts = document.getElementsByTagName("script"); // http://stackoverflow.com/a/2255727/1461859
-    var file = scripts[scripts.length-1].src.split('?')[0];
-    var azurPostMapPluginDir = file.substr(0, file.lastIndexOf( '/' ) );
-
-    $.getScript(azurPostMapPluginDir + '/google.tooltip.js', function() {
-      azurPostMap();
-    });
+    azurPostMap();
   }
 
 })(jQuery);

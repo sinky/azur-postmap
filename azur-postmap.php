@@ -17,10 +17,11 @@ if ( ! defined( 'WPINC' ) ) {
 //ini_set('display_errors', 1);
 
 function azur_postmap_scripts() {
-  wp_enqueue_script('google-maps', 'https://maps.googleapis.com/maps/api/js?v=3.9', array(), 0, true);
-  wp_enqueue_script('azur-postmap', plugins_url('azur-postmap.js', __FILE__ ), array(), 0, true);
+  wp_register_script('google-maps', 'https://maps.googleapis.com/maps/api/js?v=3.26', array(), 0, true);
+  wp_register_script('azur-google-maps-tooltips', plugins_url('google.tooltip.js', __FILE__ ), array(), 0, true);
+  wp_register_script('azur-postmap', plugins_url('azur-postmap.js', __FILE__ ), array(), 0, true);
 }
-add_action( 'wp_enqueue_scripts', 'azur_postmap_scripts' );
+add_action('wp_enqueue_scripts', 'azur_postmap_scripts');
 
 function azur_postmap_shortcode( $atts ) {
   $options = shortcode_atts( array(
@@ -33,6 +34,10 @@ function azur_postmap_shortcode( $atts ) {
     'category_name' => $options['category_name'],
     'tag' => $options['tag']
   ));
+  
+  wp_enqueue_script('google-maps');
+  wp_enqueue_script('azur-google-maps-tooltips');
+  wp_enqueue_script('azur-postmap');
 
   $data = array();
 
@@ -50,8 +55,8 @@ function azur_postmap_shortcode( $atts ) {
     $e->post_title = $post->post_title;
     $e->post_content = $post->post_excerpt;
     if(empty(trim($e->post_content))) {
-      $e->post_content = substr(strip_tags($post->post_content),0, 140);
-      if(strlen($e->post_content) >= 140) {
+      $e->post_content = substr(strip_tags($post->post_content),0, 300);
+      if(strlen($e->post_content) >= 300) {
         $e->post_content .= " &hellip;";
       }
 
@@ -59,9 +64,10 @@ function azur_postmap_shortcode( $atts ) {
         $e->post_content = "Kein Text Auszug vorhanden.";
       }
     }
+    
     $e->post_date = date("d.m.Y", strtotime($post->post_date));
-
     $e->post_tags = implode(',', wp_get_post_tags($id, array('fields'=>'names')) );
+    
     $data[] = $e;
   }
 
