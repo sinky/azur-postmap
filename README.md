@@ -12,62 +12,41 @@ All posts with geolocation within given category will displayed
 ```CSS 
 .azur-postmap {
   height: 500px;
+  margin-bottom: 1.6471em;
 }
+
 .azur-postmap img {
   max-width: none;
 }
+
 .azur-postmap .gm-style .gm-style-iw {
   font-size: 14px;
 }
-.azur-postmap .infowindow-title,
-.azur-postmap .infowindow-date {
+
+.azur-postmap .popup-title,
+.azur-postmap .popup-date {
   margin-bottom: .5em;
 }
-.azur-postmap .infowindow-title {
+
+.azur-postmap .popup-title {
   font-size: large;
 }
-.googleTooltip {
-  border-radius: 5px;
-  background-color: rgba(0,0,0,0.7);
-  color: #fff;
-  padding: 5px;
-  max-width: 200px;
-  position: relative;
-}
+```
 
-/* Arrow */
-.googleTooltip.arrow:after {
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-  border-color: rgba(0, 0, 0, 0);
-  border-width: 5px;
-}
-.googleTooltip.top.arrow:after {
-  top: 100%;
-  right: 50%;
-  border-top-color: rgba(0,0,0,0.7);
-  margin-right: -5px;
-}
-.googleTooltip.bottom.arrow:after {
-  bottom: 100%;
-  left: 50%;
-  border-bottom-color: rgba(0,0,0,0.7);
-  margin-left: -5px;
-}
-.googleTooltip.arrow.right:after {
-  top: 50%;
-  right: 100%;
-  border-right-color: rgba(0,0,0,0.7);
-  margin-top: -5px;
-}
-.googleTooltip.arrow.left:after {
-  top: 50%;
-  left: 100%;
-  border-left-color: rgba(0,0,0,0.7);
-  margin-top: -5px;
-}
+## Customize leaflet map
+Use Wordpress Hook ''azur_postmap_user_script'' to inject custom Javascript
+var ''postMap'' is an object with the property map and controlLayers
+
+```
+add_action('azur_postmap_user_script', 'my_function');
+function my_function() {?>
+var mapbox_street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+  attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+  maxZoom: 22,
+  id: 'mapbox.streets',
+  accessToken: 'ACCESS_TOKEN'
+});
+
+// add custom tileLayer to controlLayers
+postMap.controlLayers.addBaseLayer(mapbox_street, "Mapbox Street");
 ```

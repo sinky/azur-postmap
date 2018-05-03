@@ -1,118 +1,119 @@
-(function($) {
+(function() {
 
-  function azurPostMap() {
-    var infowindow = new google.maps.InfoWindow({maxWidth: 500});
-    var iconGoogle = { url: "//mts.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=1" };
-    var iconGoogleBlue = { url: "//mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-waypoint-blue.png?scale=1" };
-    // Icons: http://stackoverflow.com/a/18531494
+function extend(obj, src) {
+  Object.keys(src).forEach(function(key) { obj[key] = src[key]; });
+  return obj;
+}
 
-    for(var type in google.maps.MapTypeId) {
-      mapTypeIds.push(google.maps.MapTypeId[type]);
+function azurPostMap(container, data) {
+
+  var map, markers = new L.featureGroup();
+  
+  container.innerHTML = '';
+
+  /*
+    Map
+  */
+  var map = L.map(container, {
+    center: [0,0],
+    zoom: 9
+  });
+
+
+  /*
+    Layers
+  */
+  var tile_osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  var tile_stamen_watercolor = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
+    maxZoom: 18,
+    subdomains: "a b c d".split(" "),
+    attribution: 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org/">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
+  });
+
+  var tile_stamen_terrain = L.tileLayer('http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png', {
+    maxZoom: 16,
+    subdomains: "a b c d".split(" "),
+    attribution: 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org/">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
+  });
+
+  var baseLayers = {
+    "OSM": tile_osm,
+    "Stamen Watercolor": tile_stamen_watercolor,
+    "Stamen Terrain": tile_stamen_terrain
+  };
+
+  var overlays = {
+    "Posts": markers
+  };
+
+  tile_osm.addTo(map);
+  markers.addTo(map);
+
+
+  /*
+    Control
+  */
+  // Layer Control
+  var controlLayers = L.control.layers(baseLayers, overlays).addTo(map);
+
+  // Map Scale
+  L.control.scale().addTo(map);
+
+
+  /*
+    Data
+  */
+  data.forEach(function(entry, i) {
+
+    var post_title = entry.post_title;
+    var post_content = entry.post_content;
+    var post_date = entry.post_date;
+    var post_tags = entry.post_tags;
+    var permalink = entry.permalink;
+
+    var lat = entry.lat;
+    var lng = entry.lng;
+    if(!/^[+-]?\d+(\.\d+)?/.test(lat) || !/^[+-]?\d+(\.\d+)?/.test(lng)){
+      return;
     }
 
-    map = new google.maps.Map($map.get(0), {
-      zoom: 4,
-      center: new google.maps.LatLng(0, 0),
-      mapTypeControlOptions: {
-        mapTypeIds: mapTypeIds
-      }
+    var icon = L.icon({ 
+		iconUrl:"//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png", 
+		iconSize: [25, 41],
+		iconAnchor: [12, 40],
+		popupAnchor: [0, -40]
+	});
+
+    var marker = L.marker([lat, lng], {icon: icon});
+    markers.addLayer(marker);
+
+    marker.bindTooltip(post_title);
+    marker.bindPopup(
+      '<div class="popup-title"><a href="' + permalink + '">' + post_title + '</a></div>' +
+      '<div class="popup-date">' + post_date + '</div>' +
+      '<div class="popup-content">' + post_content + '</div>'
+    )
+
+    marker.on('mouseover', function (e) {
+      this.openTooltip();
+    });
+    marker.on('mouseout', function (e) {
+      this.closeTooltip();
     });
 
-    newMapType("osm", "OSM", "//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
-    newMapType("watercolor", "Watercolor", "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", "abcd");
+  });
 
-    google.maps.event.addListener(map, 'click', function() {
-      infowindow.close();
-    });
+  map.fitBounds(markers.getBounds().pad(0.05));
+  
+  return {
+    map: map,
+    controlLayers: controlLayers
+  };
+}
 
-    $.each(azurPostmapData, function(i, entry){
-      var post_title = entry.post_title;
-      var post_content = entry.post_content;
-      var post_date = entry.post_date;
-      var post_tags = entry.post_tags;
-      var permalink = entry.permalink;
+window.azurPostMap = azurPostMap;
 
-      var lat = entry.lat;
-      var lng = entry.lng;
-
-      if(!/^[+-]?\d+(\.\d+)?/.test(lat) || !/^[+-]?\d+(\.\d+)?/.test(lng)){
-        return;
-      }
-
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(lat, lng),
-        map: map
-      });
-
-      if(post_tags.indexOf('postmapicon-blue') != -1) {
-        marker.setIcon(iconGoogleBlue);
-      }
-
-      markers.push(marker);
-
-      if(post_title) {
-        var tooltip = new Tooltip({
-          marker: marker,
-          content: post_title,
-          cssClass: 'googleTooltip',
-          position: 'left',
-          gap: 8
-        });
-      }
-
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(
-          '<div class="infowindow-title"><a href="' + permalink + '">' + post_title + '</a></div>' +
-          '<div class="infowindow-date">' + post_date + '</div>' +
-          '<div class="infowindow-content">' + post_content + '</div>'
-        );
-        infowindow.open(map,marker);
-      });
-
-    });
-
-    var bounds = new google.maps.LatLngBounds();
-    for(i=0; i<markers.length; i++) {
-      bounds.extend(markers[i].getPosition());
-    }
-    map.fitBounds(bounds);
-  }
-
-  function newMapType(id, text, url, subdomains, maxzoom, tilesize) {
-    subdomains = typeof subdomains !== 'undefined' ? subdomains : 'abc';
-    maxzoom = typeof maxzoom !== 'undefined' ? maxzoom : 18;
-    tilesize = typeof tilesize !== 'undefined' ? tilesize : 256;
-
-    mapTypeIds.push(id);
-    map.mapTypes.set(id, new google.maps.ImageMapType({
-      name: text,
-      getTileUrl: function(coord, zoom) {
-        tileUrl = url;
-        subdomain = subdomains.charAt(Math.floor(Math.random() * subdomains.length));
-
-        // normalize coord, repeat x but not y
-        var y = coord.y; var x = coord.x;
-        var tileRange = 1 << zoom;
-        if (y < 0 || y >= tileRange) {return null;}
-        if (x < 0 || x >= tileRange) { x = (x % tileRange + tileRange) % tileRange;}
-        tileCoord = {x: x,y: y};
-
-        tileUrl = tileUrl.replace("{s}", subdomain);
-        tileUrl = tileUrl.replace("{z}", zoom).replace("{x}", tileCoord.x).replace("{y}", tileCoord.y);
-        return tileUrl;
-      },
-      maxZoom: maxzoom,
-      tileSize: new google.maps.Size(tilesize, tilesize)
-    }));
-  }
-
-  var $map = $('#azur-postmap');
-  var map, mapTypeIds = [], markers = [];
-
-  window.azurPostMap = azurPostMap;
-
-  if($map.length){
-    azurPostMap();
-  }
-
-})(jQuery);
+})();

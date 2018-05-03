@@ -17,11 +17,23 @@ if ( ! defined( 'WPINC' ) ) {
 //ini_set('display_errors', 1);
 
 function azur_postmap_scripts() {
-  wp_register_script('google-maps', 'https://maps.googleapis.com/maps/api/js?v=3.26', array(), 0, true);
-  wp_register_script('azur-google-maps-tooltips', plugins_url('google.tooltip.js', __FILE__ ), array(), 0, true);
+  wp_register_style('leaflet', '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css');
+  wp_register_script('leaflet-js', '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js', array(), 0, true);
   wp_register_script('azur-postmap', plugins_url('azur-postmap.js', __FILE__ ), array(), 0, true);
 }
 add_action('wp_enqueue_scripts', 'azur_postmap_scripts');
+
+function azur_postmap_footer_script() { ?>
+  <script>
+  (function() {
+    if(azurPostMapData.length){
+      var postMap = azurPostMap(document.querySelector('#azur-postmap'), azurPostMapData);
+      <?php do_action('azur_postmap_user_script'); ?>
+    }
+  })();
+</script>
+<?php 
+}
 
 function azur_postmap_shortcode( $atts ) {
   $options = shortcode_atts( array(
@@ -35,9 +47,10 @@ function azur_postmap_shortcode( $atts ) {
     'tag' => $options['tag']
   ));
   
-  wp_enqueue_script('google-maps');
-  wp_enqueue_script('azur-google-maps-tooltips');
+  wp_enqueue_style('leaflet');
+  wp_enqueue_script('leaflet-js');
   wp_enqueue_script('azur-postmap');
+  add_action('wp_footer', 'azur_postmap_footer_script', 99);
 
   $data = array();
 
@@ -73,23 +86,10 @@ function azur_postmap_shortcode( $atts ) {
 
   $json = json_encode($data);
 
-  $output =  "<script>var azurPostmapData = ".$json.";</script>";
+  $output =  "<script>var azurPostMapData = ".$json.";</script>";
   $output .=  "<div id='azur-postmap' class='azur-postmap'>Lade Postmap ...</div>";
 
   return $output;
 }
 add_shortcode( 'azur-postmap', 'azur_postmap_shortcode' );
 
-if(!function_exists('azur_adminbar_map')) {
-  function azur_adminbar_map() {
-    global $wp_admin_bar;
-    $wp_admin_bar->add_menu( array(
-      'parent' => false,
-      'id' => 'map',
-      'title' => 'Map',
-      'href' => plugins_url('map.html', __FILE__ ),
-      'meta' => array('target' => '_blank')
-    ));
-  }
-  add_action( 'wp_before_admin_bar_render', 'azur_adminbar_map' );
-}
