@@ -1,4 +1,4 @@
-# Wordpress Posts on Map
+# Wordpress Posts as Marker on Leaflet Map
 
 
 ## Usage
