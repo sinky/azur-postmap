@@ -1,4 +1,4 @@
-# Wordpress Post on Map
+# Wordpress Posts on Map
 
 
 ## Usage
