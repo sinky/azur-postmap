@@ -34,10 +34,11 @@ All posts with geolocation within given category will displayed
 ```
 
 ## Customize leaflet map
-Use Wordpress Hook ''azur_postmap_user_script'' to inject custom Javascript
-var ''azurPostMap'' is an object with the property map and controlLayers
+Use Wordpress Hook ''azur_postmap_user_script'' to inject custom Javascript.
 
-```
+The variable ''azurPostMap'' is an object with the property `map` and `controlLayers`
+
+```PHP
 add_action('azur_postmap_user_script', 'my_function');
 function my_function() {?>
 var mapbox_street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
