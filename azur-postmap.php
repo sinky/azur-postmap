@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Azur Post Map
-Plugin URI: http://my-azur.de
+Plugin URI: https://github.com/sinky/azur-postmap
 Version: 1.0
 Author: Marco Krage
 Author URI: http://my-azur.de
-Description: Show a map with posts
+Description: Show a map with geotagged posts. All, by category or by radius.
 GitHub Plugin URI: https://github.com/sinky/azur-postmap
 */
 
