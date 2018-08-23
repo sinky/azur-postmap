@@ -6,6 +6,7 @@ Version: 0.1
 Author: Marco Krage
 Author URI: http://my-azur.de
 Description: Show a map with posts
+GitHub Plugin URI: https://github.com/sinky/azur-postmap
 */
 
 // If this file is called directly, abort.
