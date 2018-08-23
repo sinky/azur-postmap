@@ -2,7 +2,7 @@
 /*
 Plugin Name: Azur Post Map
 Plugin URI: http://my-azur.de
-Version: 0.1
+Version: 1.0
 Author: Marco Krage
 Author URI: http://my-azur.de
 Description: Show a map with posts
