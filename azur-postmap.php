@@ -39,8 +39,8 @@ function azur_postmap_shortcode( $atts ) {
 	$options = shortcode_atts( array(
 		'category_name' => '',
 		'tag' => '',
-	'center' => '',
-	'radius' => ''
+		'center' => '',
+		'radius' => ''
 		), $atts );
 
 	$posts = get_posts(array(
