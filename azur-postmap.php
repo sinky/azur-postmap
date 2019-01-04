@@ -6,7 +6,6 @@ Version: 1.0
 Author: Marco Krage
 Author URI: http://my-azur.de
 Description: Show a map with geotagged posts. All, by category or by radius.
-GitHub Plugin URI: https://github.com/sinky/azur-postmap
 */
 
 // If this file is called directly, abort.
