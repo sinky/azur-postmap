@@ -4,7 +4,7 @@ Plugin Name: Azur Post Map
 Plugin URI: https://github.com/sinky/azur-postmap
 Version: 1.0
 Author: Marco Krage
-Author URI: http://my-azur.de
+Author URI: https://my-azur.de
 Description: Show a map with geotagged posts. All, by category or by radius.
 */
 
