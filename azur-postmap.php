@@ -77,7 +77,7 @@ function azur_postmap_shortcode( $atts ) {
 		$e->post_title = $post->post_title;
 		$e->post_content = $post->post_excerpt;
 		if(empty(trim($e->post_content))) {
-			$e->post_content = substr(strip_tags($post->post_content),0, 300);
+			$e->post_content = substr(strip_tags($post->post_content, '<a>'),0, 300);
 			if(strlen($e->post_content) >= 300) {
 				$e->post_content .= " &hellip;";
 			}
