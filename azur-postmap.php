@@ -17,8 +17,8 @@ if ( ! defined( 'WPINC' ) ) {
 //ini_set('display_errors', 1);
 
 function azur_postmap_scripts() {
-	wp_register_style('leaflet', '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css');
-	wp_register_script('leaflet-js', '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js', array(), 0, true);
+	wp_register_style('leaflet', '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.css');
+	wp_register_script('leaflet-js', '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.6.0/leaflet.js', array(), 0, true);
 	wp_register_script('azur-postmap', plugins_url('azur-postmap.js', __FILE__ ), array(), 0, true);
 }
 add_action('wp_enqueue_scripts', 'azur_postmap_scripts');
