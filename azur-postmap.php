@@ -77,8 +77,15 @@ function azur_postmap_shortcode( $atts ) {
 		$e->post_title = $post->post_title;
 		$e->post_content = $post->post_excerpt;
 		if(empty(trim($e->post_content))) {
-			$e->post_content = substr(strip_tags($post->post_content, '<a>'),0, 300);
-			if(strlen($e->post_content) >= 300) {
+			$post_content = $post->post_content;
+
+			$post_content = preg_replace("/(\r|\n)$/", "", $post_content);
+			$post_content = strip_tags($post_content);
+			$post_content = substr($post_content, 0, 300);
+
+			$e->post_content = $post_content;
+
+			if(strlen($post->post_content) >= 300) {
 				$e->post_content .= " &hellip;";
 			}
 
@@ -95,12 +102,12 @@ function azur_postmap_shortcode( $atts ) {
 
 	$json = json_encode($data);
 
-	$output =	"<script>var azurPostMapData = ".$json.";</script>";
-	$output .=	"<div id='azur-postmap' class='azur-postmap'>Lade Postmap ...</div>";
+	$output = "<script>var azurPostMapData = ".$json.";</script>";
+	$output .= "<div id='azur-postmap' class='azur-postmap'>Lade Postmap ...</div>";
 
 	return $output;
 }
-add_shortcode( 'azur-postmap', 'azur_postmap_shortcode' );
+add_shortcode('azur-postmap', 'azur_postmap_shortcode');
 
 
 function getBoundingBox($lat, $lon, $radius) {
@@ -132,5 +139,3 @@ function inBounds($pointLat, $pointLong, $boundsNElat, $boundsNElong, $boundsSWl
 		$inLat = $pointLat > $boundsSWlat && $pointLat < $boundsNElat;
 		return $inLat && $inLong;
 }
-
-
