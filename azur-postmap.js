@@ -83,7 +83,7 @@ function _azurPostMap(container, data) {
 			popupAnchor: [0, -40]
 		});
 
-		var marker = L.marker([lat, lng], {icon: icon});
+		var marker = L.marker([lat, lng], {icon: icon, zIndexOffset: i*100});
 		markers.addLayer(marker);
 
 		marker.bindTooltip(post_title);
