@@ -3,10 +3,23 @@
 
 ## Usage
 ```
+[azur-postmap]
+```
+All posts with geolocation
+```
 [azur-postmap category_name="Reisen"]
 ```
 All posts with geolocation within given category will displayed
 
+```
+[azur-postmap center="51.163375,10.447683" radius="400"]
+```
+All posts with geolocation within a specified radius of the coordinates
+
+```
+[azur-postmap bbox="51.261915,6.866455,51.757640,7.848008"]
+```
+All posts with geolocation within a bounding box (http://bboxfinder.com //  Coordinate Format: Lat/Lng GDAL)
 
 ## Recommended CSS
 ```CSS 
