@@ -40,7 +40,8 @@ function azur_postmap_shortcode( $atts ) {
 		'category_name' => '',
 		'tag' => '',
 		'center' => '',
-		'radius' => ''
+		'radius' => '',
+		'bbox' => '' // http://bboxfinder.com //  Coordinate Format: Lat / Lng (GDAL)
 		), $atts );
 
 	$posts = get_posts(array(
@@ -53,19 +54,31 @@ function azur_postmap_shortcode( $atts ) {
 	wp_enqueue_script('leaflet-js');
 	wp_enqueue_script('azur-postmap');
 	add_action('wp_footer', 'azur_postmap_footer_script', 99);
+	
+	$bbox = null;
+
+	if($options['center'] && $options['radius']) {
+		list($searchLat,$searchLng) = explode(',', $options['center']);
+		$bbox = getBoundingBox($searchLat, $searchLng, $options['radius']);
+	}elseif($options['bbox']){
+		list($boundsSWlat,$boundsSWlong,$boundsNElat,$boundsNElong) = explode(',', $options['bbox']);
+		$bbox = array(
+			"ne" => array("lat" => $boundsNElat, "lon" => $boundsNElong),
+			"sw" => array("lat" => $boundsSWlat, "lon" => $boundsSWlong)
+		);
+	}
 
 	$data = array();
-
 	foreach($posts as $post) {
 		$id = $post->ID;
 		$lat = get_post_meta($post->ID, 'geo_latitude', true);
 		$lng = get_post_meta($post->ID, 'geo_longitude', true);
-		if(empty($lat) || empty($lng)) { continue; }
-
-		if($options['center'] && $options['radius']) {
-			list($searchLat,$searchLng) = explode(',', $options['center']);
-			$coords = getBoundingBox($searchLat, $searchLng, $options['radius']);
-			$checkInBounds = inBounds($lat, $lng, $coords['ne']['lat'], $coords['ne']['lon'], $coords['sw']['lat'], $coords['sw']['lon']);
+		if(empty($lat) || empty($lng)) { 
+			continue; 
+		}
+		
+		if($bbox != null) {
+			$checkInBounds = inBounds($lat, $lng, $bbox['ne']['lat'], $bbox['ne']['lon'], $bbox['sw']['lat'], $bbox['sw']['lon']);
 			if(!$checkInBounds) { continue;	}
 		}
 
@@ -130,6 +143,7 @@ function inBounds($pointLat, $pointLong, $boundsNElat, $boundsNElong, $boundsSWl
 		$eastBound = $pointLong < $boundsNElong;
 		$westBound = $pointLong > $boundsSWlong;
 
+	
 		if ($boundsNElong < $boundsSWlong) {
 				$inLong = $eastBound || $westBound;
 		} else {
@@ -137,5 +151,6 @@ function inBounds($pointLat, $pointLong, $boundsNElat, $boundsNElong, $boundsSWl
 		}
 
 		$inLat = $pointLat > $boundsSWlat && $pointLat < $boundsNElat;
+
 		return $inLat && $inLong;
 }
