@@ -1,4 +1,3 @@
-
 (function() {
 
 function _azurPostMap(container, data) {
@@ -23,22 +22,8 @@ function _azurPostMap(container, data) {
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 	}).addTo(map);
 
-	var tile_stamen_watercolor = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
-		maxZoom: 18,
-		subdomains: "a b c d".split(" "),
-		attribution: 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org/">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
-	});
-
-	var tile_stamen_terrain = L.tileLayer('http://{s}.tile.stamen.com/terrain/{z}/{x}/{y}.png', {
-		maxZoom: 16,
-		subdomains: "a b c d".split(" "),
-		attribution: 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org/">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
-	});
-
 	var baseLayers = {
-		"OSM": tile_osm,
-		"Stamen Watercolor": tile_stamen_watercolor,
-		"Stamen Terrain": tile_stamen_terrain
+		"OSM": tile_osm
 	};
 
 	var overlays = {
