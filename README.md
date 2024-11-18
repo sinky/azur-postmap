@@ -12,14 +12,14 @@ All posts with geolocation
 All posts with geolocation within given category will displayed
 
 ```
-[azur-postmap center="51.163375,10.447683" radius="400"]
+[azur-postmap bbox="6.306152,51.034486,8.767090,51.795027"]
 ```
-All posts with geolocation within a specified radius of the coordinates
+All posts with geolocation within a bounding box: http://bboxfinder.com  Coordinate Format: Lng/Lat (GDAL)
 
 ```
-[azur-postmap bbox="51.261915,6.866455,51.757640,7.848008"]
+[azur-postmap center="51.163375,10.447683" radius="400"]
 ```
-All posts with geolocation within a bounding box (http://bboxfinder.com //  Coordinate Format: Lat/Lng GDAL)
+All posts with geolocation within a bounding box of a specified radius of the coordinates
 
 ## Recommended CSS
 ```CSS 
@@ -45,7 +45,7 @@ All posts with geolocation within a bounding box (http://bboxfinder.com //  Coor
 ## Customize leaflet map
 Use the Wordpress Hook ''azur_postmap_user_script'' to inject custom Javascript. For example to add a new tile layer.
 
-The variable ''azurPostMap'' is an object with the property `map` and `controlLayers`
+The variable ''azurPostMaps'' is an array containing object foreach map with the property `map` and `controlLayers`
 
 ### Example
 ```PHP
@@ -58,6 +58,9 @@ var mapbox_street = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y
   accessToken: 'ACCESS_TOKEN'
 });
 
-// add custom tileLayer to controlLayers
-azurPostMap.controlLayers.addBaseLayer(mapbox_street, "Mapbox Street");
+// 
+window.azurPostMaps.forEach(function(azurPostMap,i){
+  // add custom tileLayer to controlLayers
+  azurPostMap.controlLayers.addBaseLayer(mapbox_street, "Mapbox Street");
+});
 ```
