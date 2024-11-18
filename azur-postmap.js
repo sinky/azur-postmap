@@ -1,5 +1,3 @@
-(function() {
-
 function _azurPostMap(container, data) {
 
 	var map, markers = new L.featureGroup();
@@ -10,8 +8,8 @@ function _azurPostMap(container, data) {
 		Map
 	*/
 	var map = L.map(container, {
-		center: [0,0],
-		zoom: 9
+		center: [51,7],
+		zoom: 3
 	});
 
 
@@ -38,7 +36,7 @@ function _azurPostMap(container, data) {
 		Control
 	*/
 	// Layer Control
-	var controlLayers = L.control.layers(baseLayers, overlays).addTo(map);
+	var controlLayers = new L.control.layers(baseLayers, overlays).addTo(map);
 
 	// Map Scale
 	L.control.scale().addTo(map);
@@ -47,47 +45,45 @@ function _azurPostMap(container, data) {
 	/*
 		Data
 	*/
-	data.forEach(function(entry, i) {
+	if(data.length > 0) {
+		data.forEach(function(entry, i) {
 
-		var post_title = entry.post_title;
-		var post_content = entry.post_content;
-		var post_date = entry.post_date;
-		var post_tags = entry.post_tags;
-		var permalink = entry.permalink;
+			var post_title = entry.post_title;
+			var post_content = entry.post_content;
+			var post_date = entry.post_date;
+			var post_tags = entry.post_tags;
+			var permalink = entry.permalink;
 
-		var lat = entry.lat;
-		var lng = entry.lng;
-		if(!/^[+-]?\d+(\.\d+)?/.test(lat) || !/^[+-]?\d+(\.\d+)?/.test(lng)){
-			return;
-		}
+			var lat = entry.lat;
+			var lng = entry.lng;
+			if(!/^[+-]?\d+(\.\d+)?/.test(lat) || !/^[+-]?\d+(\.\d+)?/.test(lng)){
+				return;
+			}
 
-		var icon = L.icon({
-			iconUrl:"//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png",
-			iconSize: [25, 41],
-			iconAnchor: [12, 40],
-			popupAnchor: [0, -40]
+			var icon = L.icon({
+				iconUrl:"//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/marker-icon.png",
+				iconSize: [25, 41],
+				iconAnchor: [12, 40],
+				popupAnchor: [0, -40]
+			});
+
+			var marker = L.marker([lat, lng], {icon: icon, zIndexOffset: i*100});
+			markers.addLayer(marker);
+
+			marker.bindTooltip(post_title);
+			marker.bindPopup(
+				'<div class="popup-title"><a href="' + permalink + '">' + post_title + '</a></div>' +
+				'<div class="popup-date">' + post_date + '</div>' +
+				'<div class="popup-content">' + post_content + '</div>'
+			)
+
 		});
 
-		var marker = L.marker([lat, lng], {icon: icon, zIndexOffset: i*100});
-		markers.addLayer(marker);
-
-		marker.bindTooltip(post_title);
-		marker.bindPopup(
-			'<div class="popup-title"><a href="' + permalink + '">' + post_title + '</a></div>' +
-			'<div class="popup-date">' + post_date + '</div>' +
-			'<div class="popup-content">' + post_content + '</div>'
-		)
-
-	});
-
-	map.fitBounds(markers.getBounds().pad(0.05));
+		map.fitBounds(markers.getBounds().pad(0.05));
+	}
 
 	return {
 		map: map,
 		controlLayers: controlLayers
 	};
 }
-
-window._azurPostMap = _azurPostMap;
-
-})();
