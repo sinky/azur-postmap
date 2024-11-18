@@ -24,13 +24,13 @@ function azur_postmap_scripts() {
 add_action('wp_enqueue_scripts', 'azur_postmap_scripts');
 
 function azur_postmap_footer_script() { ?>
-	<script>
-	(function() {
-		if(azurPostMapData.length){
-			window.azurPostMap = _azurPostMap(document.querySelector('#azur-postmap'), azurPostMapData);
-			<?php do_action('azur_postmap_user_script'); ?>
-		}
-	})();
+<script>
+	var azurPostMaps = [];
+	document.querySelectorAll('[data-azur-postmap]').forEach(function(elm){
+		var id = elm.dataset.azurPostmap
+		azurPostMaps.push(_azurPostMap(elm, azurPostMapData[id]))
+	})
+	<?php do_action('azur_postmap_user_script'); ?>
 </script>
 <?php
 }
@@ -41,7 +41,7 @@ function azur_postmap_shortcode( $atts ) {
 		'tag' => '',
 		'center' => '',
 		'radius' => '',
-		'bbox' => '' // http://bboxfinder.com //  Coordinate Format: Lat / Lng (GDAL)
+		'bbox' => '' // http://bboxfinder.com //  Coordinate Format: Lng/Lat (GDAL)
 		), $atts );
 
 	$posts = get_posts(array(
@@ -61,10 +61,10 @@ function azur_postmap_shortcode( $atts ) {
 		list($searchLat,$searchLng) = explode(',', $options['center']);
 		$bbox = getBoundingBox($searchLat, $searchLng, $options['radius']);
 	}elseif($options['bbox']){
-		list($boundsSWlat,$boundsSWlong,$boundsNElat,$boundsNElong) = explode(',', $options['bbox']);
+		list($boundsSWlong,$boundsSWlat,$boundsNElong,$boundsNElat) = explode(',', $options['bbox']);
 		$bbox = array(
-			"ne" => array("lat" => $boundsNElat, "lon" => $boundsNElong),
-			"sw" => array("lat" => $boundsSWlat, "lon" => $boundsSWlong)
+			"sw" => array("lat" => $boundsSWlat, "lon" => $boundsSWlong),
+			"ne" => array("lat" => $boundsNElat, "lon" => $boundsNElong)
 		);
 	}
 
@@ -115,8 +115,10 @@ function azur_postmap_shortcode( $atts ) {
 
 	$json = json_encode($data);
 
-	$output = "<script>var azurPostMapData = ".$json.";</script>";
-	$output .= "<div id='azur-postmap' class='azur-postmap'>Lade Postmap ...</div>";
+	$uniqid = uniqid();
+	
+	$output = "<script>if (typeof window.azurPostMapData === 'undefined') {window.azurPostMapData = []}; window.azurPostMapData['".$uniqid."'] = ".$json.";</script>";
+	$output .= "<div id='azur-postmap' class='azur-postmap' data-azur-postmap='".$uniqid."'>Lade Postmap ...</div>";
 
 	return $output;
 }
